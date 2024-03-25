@@ -10,6 +10,5 @@ namespace api.Models
         public DateTime CreatedOn { get; set; } = DateTime.Now;
         public int? StockId { get; set; }
 		//navigation prop
-		public Stock? Stock { get; set; }	
     }
 }

@@ -1,4 +1,6 @@
 using api.Data;
+using api.Services;
+using api.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,9 +11,12 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IStockService,StockService>();
+builder.Services.AddScoped<ICommentsService, CommentService>();
 
-  //here u plugin what db you want to use , here i will be using SQL SERVER wtih entity
-	builder.Services.AddDbContext<ApplicationDBContext>(options =>
+
+//here u plugin what db you want to use , here i will be using SQL SERVER wtih entity
+builder.Services.AddDbContext<ApplicationDBContext>(options =>
 	{
 		options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 	});

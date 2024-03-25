@@ -1,6 +1,7 @@
 ﻿using api.Data;
 using api.Dtos.Stock;
 using api.Mapper;
+using api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,14 +12,17 @@ namespace api.Controllers
 	public class StockController : ControllerBase
 	{
 		private readonly ApplicationDBContext _context;
-		public StockController(ApplicationDBContext context) {
-		this._context = context;
+		private readonly IStockService _stockService;
+		public StockController(ApplicationDBContext context,IStockService stockService) 
+		{
+			_context = context;
+			_stockService = stockService;
 
 		}
 
 		[HttpGet]
 		public async Task<IActionResult> GetAll() {
-			var stocks = await _context.Stocks.ToListAsync();
+			var stocks = await _stockService.getAllAsync();
 			var stockDto=stocks.Select(s=>s.ToStockDto());
 			if (stockDto == null)
 			{
@@ -29,7 +33,8 @@ namespace api.Controllers
 
 		[HttpGet("{id}")]
 		public async Task<IActionResult> GetById([FromRoute]int id)
-		{var stock=await _context.Stocks.FirstOrDefaultAsync(s => s.Id == id);
+		{
+			var stock = await _stockService.getStockByIdAsync(id);
 			if (stock == null)
 			{
 				return NotFound();
@@ -41,26 +46,16 @@ namespace api.Controllers
 		public async Task<IActionResult> addStock([FromBody] PostRequestDTO stockDto)
 		{
 			var stockModel=stockDto.ToStockFromPostDto();
-			await _context.Stocks.AddAsync(stockModel);
-			await _context.SaveChangesAsync();
+			await _stockService.AddStockAsync(stockModel);
 			return CreatedAtAction(nameof(GetById), new {id=stockModel.Id},stockModel.ToStockDto());
-
 		}
 		[HttpPut]
 		[Route("{id}")]
 		public async Task<IActionResult> Update([FromRoute]int id, [FromBody] PutRequestDto stockModel)
 		{
-			var findStock=await _context.Stocks.FirstOrDefaultAsync(s=>s.Id == id);
-			if (findStock == null)
-			{ return NotFound(); }
-			findStock.Symbol=stockModel.Symbol;
-			findStock.CompanyName=stockModel.CompanyName;
-			findStock.Industry=stockModel.Industry;
-			findStock.Purchase=stockModel.Purchase;
-			findStock.MarketCap=stockModel.MarketCap;
+			var stock = await _stockService.UpdateStockAsync(id, stockModel);
 
-			await _context.SaveChangesAsync();
-			return Ok(findStock.ToStockDto());
+			return Ok(stock.ToStockDto());
 
 		}
 		[HttpDelete]
