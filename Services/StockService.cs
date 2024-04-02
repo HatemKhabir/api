@@ -34,12 +34,17 @@ namespace api.Services
 
 		public async Task<List<Stock>> getAllAsync()
 		{
-			return await context.Stocks.ToListAsync();
+			return await context.Stocks.Include(c=>c.Comments).ToListAsync();
 		}
 
 		public async Task<Stock?> getStockByIdAsync(int id)
 		{
-			return await context.Stocks.FirstOrDefaultAsync(s => s.Id == id);
+			return await context.Stocks.Include(c=>c.Comments).FirstOrDefaultAsync(s => s.Id == id);
+		}
+
+		public async Task<bool> StockExist(int id)
+		{
+			return await context.Stocks.AnyAsync(s=>s.Id== id);
 		}
 
 		public async Task<Stock?> UpdateStockAsync(int id, PutRequestDto putRequest)

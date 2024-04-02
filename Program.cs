@@ -13,7 +13,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IStockService,StockService>();
 builder.Services.AddScoped<ICommentsService, CommentService>();
-
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+{
+	options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+});
 
 //here u plugin what db you want to use , here i will be using SQL SERVER wtih entity
 builder.Services.AddDbContext<ApplicationDBContext>(options =>

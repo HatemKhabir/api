@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using api.Dtos.Comment;
+using api.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Dtos.Socket
 {
@@ -13,5 +15,7 @@ namespace api.Dtos.Socket
 		public decimal LastDiv { get; set; }
 		public string Industry { get; set; } = string.Empty;
 		public long MarketCap { get; set; }
+
+		public List<CommentDTO> Comments { get; set;}
 	}
 }

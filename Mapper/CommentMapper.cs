@@ -5,15 +5,25 @@ namespace api.Mapper
 {
 	public static class CommentMapper
 	{
-		public static CommentDTO ToCommentDTO(this Comment commentDTO)
+		public static CommentDTO ToCommentDTO(this Comment comment)
 		{
 			return new CommentDTO
 			{
-				Id = commentDTO.Id,
-				Title = commentDTO.Title,
-				Content = commentDTO.Content,
-				CreatedOn = commentDTO.CreatedOn,
-				StockId = commentDTO.StockId,
+				Id = comment.Id,
+				Title = comment.Title,
+				Content = comment.Content,
+				CreatedOn = comment.CreatedOn,
+				StockId = comment.StockId,
+			};
+
+		}
+		public static Comment ToCommentFromPost(this CreateCommentDTO comment,int stockId)
+		{
+			return new Comment
+			{
+				Title = comment.Title,
+				Content = comment.Content,
+				StockId=stockId
 			};
 
 		}
